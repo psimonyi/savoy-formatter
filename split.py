@@ -69,6 +69,7 @@ def new():
     <html>
     <head>
     <meta name='viewport' content='initial-scale=1'/>
+    <meta charset='utf-8'/>
     <title>Reformatted Libretti</title>
     <style type='text/css'>
         p {
