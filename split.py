@@ -58,6 +58,8 @@ def formatPre(pre, doc):
             span.appendChild(doc.createTextNode(indent))
             p.appendChild(span)
             p.appendChild(doc.createTextNode(main))
+        elif not len(line):
+            p.setAttribute('class', 'blank')
         else:
             p.appendChild(doc.createTextNode(line))
         div.appendChild(p)
@@ -74,6 +76,9 @@ def new():
     <style type='text/css'>
         p {
             margin: 0;
+        }
+        p.blank {
+            height: 0.6em;
         }
     </style>
     </head>
