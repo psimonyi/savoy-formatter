@@ -2,10 +2,12 @@
 
 from xml.dom import minidom
 from xml.dom.minidom import Node
+import html5lib
 
 def main():
     source = 'gutenberg-source.html'
-    dom = minidom.parse(source)
+    with open(source, 'rb') as f:
+        dom = html5lib.parse(f, treebuilder='dom')
     dom.normalize()
     h2s = dom.getElementsByTagName('h2')
     newdom = new()
