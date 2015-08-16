@@ -62,7 +62,9 @@ def formatPre(pre, doc):
                 span.appendChild(doc.createTextNode(indent))
                 p.appendChild(span)
                 line = line[pos:]
-            if any(line.startswith(t) for t in SONG_TYPES):
+            if any(line.strip().startswith(t) for t in SONG_TYPES):
+                # TODO: This is a little too greedy; it ought to skip lines
+                # containing all-lowercase words other than 'and' and 'with'.
                 p.setAttribute('class', 'songstart')
             p.appendChild(doc.createTextNode(line))
         div.appendChild(p)
@@ -72,19 +74,26 @@ def formatPre(pre, doc):
 SONG_TYPES = [
     'ARIA',
     'BALLAD',
+    'BARCAROLLE',
+    'CHANT',
     'CHORUS',
     'DUET',
     'ENSEMBLE',
+    'EXEUNT FOR',
     'FINALE',
+    'GLEE',
     'INVOCATION',
     'LEGEND',
     'MADRIGAL',
+    'OCTETTE',
+    'OPENING CHORUS',
     'QUARTET',
     'QUINTET',
     'RECIT',
     'RECIT.',
     'RECITATIVE',
     'SCENA',
+    'SCENE',
     'SOLO',
     'SONG',
     'TRIO',
