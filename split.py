@@ -53,6 +53,8 @@ def formatPre(pre, doc):
             if '   ' in line:
                 pos = line.rfind('   ') + len('   ')
                 indent = line[:pos]
+                if indent.isupper():
+                    indent = indent.title()
                 width = len(indent) * 0.6
                 span = doc.createElement('span')
                 style = 'width: {}ex; display: inline-block;'.format(width)
