@@ -50,8 +50,8 @@ def formatPre(pre, doc):
         if not len(line):
             p.setAttribute('class', 'blank')
         else:
-            if '  ' in line:
-                pos = line.rfind('  ') + len('  ')
+            if '   ' in line:
+                pos = line.rfind('   ') + len('   ')
                 indent = line[:pos]
                 width = len(indent) * 0.6
                 span = doc.createElement('span')
