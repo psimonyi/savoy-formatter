@@ -47,24 +47,46 @@ def formatPre(pre, doc):
     text = pre.firstChild.data
     for line in text.splitlines():
         p = doc.createElement('p')
-        if '  ' in line:
-            pos = line.rfind('  ') + len('  ')
-            indent = line[:pos]
-            main = line[pos:]
-            width = len(indent) * 0.6
-            span = doc.createElement('span')
-            style = 'width: {}ex; display: inline-block;'.format(width)
-            span.setAttribute('style', style)
-            span.appendChild(doc.createTextNode(indent))
-            p.appendChild(span)
-            p.appendChild(doc.createTextNode(main))
-        elif not len(line):
+        if not len(line):
             p.setAttribute('class', 'blank')
         else:
+            if '  ' in line:
+                pos = line.rfind('  ') + len('  ')
+                indent = line[:pos]
+                width = len(indent) * 0.6
+                span = doc.createElement('span')
+                style = 'width: {}ex; display: inline-block;'.format(width)
+                span.setAttribute('style', style)
+                span.appendChild(doc.createTextNode(indent))
+                p.appendChild(span)
+                line = line[pos:]
+            if any(line.startswith(t) for t in SONG_TYPES):
+                p.setAttribute('class', 'songstart')
             p.appendChild(doc.createTextNode(line))
         div.appendChild(p)
 
     return div
+
+SONG_TYPES = [
+    'ARIA',
+    'BALLAD',
+    'CHORUS',
+    'DUET',
+    'ENSEMBLE',
+    'FINALE',
+    'INVOCATION',
+    'LEGEND',
+    'MADRIGAL',
+    'QUARTET',
+    'QUINTET',
+    'RECIT',
+    'RECIT.',
+    'RECITATIVE',
+    'SCENA',
+    'SOLO',
+    'SONG',
+    'TRIO',
+]
 
 def new():
     return minidom.parseString('''
@@ -79,6 +101,9 @@ def new():
         }
         p.blank {
             height: 0.6em;
+        }
+        p.songstart{
+            font-weight: bold;
         }
     </style>
     </head>
