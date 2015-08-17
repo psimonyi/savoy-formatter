@@ -5,20 +5,24 @@ from xml.dom.minidom import Node
 import html5lib
 
 def main():
+    dom = source_dom()
+    newdom = blank_template()
+    article = newdom.getElementsByTagName('article')[0]
+    # H2s are used for both opera names and act numbers.  There's also an H2 in
+    # the page heading, but we can ignore that.
+    h2s = dom.getElementsByTagName('h2')
+    for h2 in h2s:
+        article.appendChild(format_part(h2, newdom))
+    write_dom(newdom)
+
+def source_dom():
     source = 'gutenberg-source.html'
     with open(source, 'rb') as f:
         dom = html5lib.parse(f, treebuilder='dom')
     dom.normalize()
-    h2s = dom.getElementsByTagName('h2')
-    newdom = new()
-    article = newdom.getElementsByTagName('article')[0]
-    # H2s are used for both opera names and act numbers.  There's also an H2 in
-    # the page heading, but we can ignore that.
-    for h2 in h2s:
-        article.appendChild(formatPart(h2, newdom))
-    print(newdom.toxml())
+    return dom
 
-def formatPart(h2, doc):
+def format_part(h2, doc):
     # The <h2> is followed by one or more <pre>, and we stop at the <p>.
 
     section = doc.createElement('section')
@@ -31,18 +35,18 @@ def formatPart(h2, doc):
 
     node = nextElementSibling(h2)
     while node.tagName == 'pre':
-        section.appendChild(formatPre(node, doc))
+        section.appendChild(format_pre(node, doc))
         node = nextElementSibling(node)
 
     return section
 
 def nextElementSibling(node):
     node = node.nextSibling
-    while node.nodeType != Node.ELEMENT_NODE:
+    while node and node.nodeType != Node.ELEMENT_NODE:
         node = node.nextSibling
     return node
 
-def formatPre(pre, doc):
+def format_pre(pre, doc):
     div = doc.createElement('div')
     text = pre.firstChild.data
     for line in text.splitlines():
@@ -99,7 +103,7 @@ SONG_TYPES = [
     'TRIO',
 ]
 
-def new():
+def blank_template():
     return minidom.parseString('''
     <html>
     <head>
@@ -122,6 +126,10 @@ def new():
     <article/>
     </body>
     </html>''')
+
+def write_dom(newdom):
+    with open('gs14.html', 'w') as f:
+        newdom.writexml(f)
 
 if __name__ == '__main__':
     main()
