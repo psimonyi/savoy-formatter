@@ -20,7 +20,7 @@ def source_dom():
 def format(old, new):
     # H2s are used for both opera names and act numbers.  There's also an H2 in
     # the page heading, but we can ignore that.
-    h2s = old.getElementsByTagName('h2')
+    h2s = old.getElementsByTagName('h2')[1:]
     article = new.getElementsByTagName('article')[0]
     section = None
     for h2 in h2s:
