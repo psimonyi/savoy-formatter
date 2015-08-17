@@ -144,16 +144,33 @@ def write_dom(newdom):
     with open('gs14.html', 'w') as f:
         newdom.writexml(f)
 
+    index = blank_template()
+    idx_main = index.getElementsByTagName('article')[0]
+    idx_list = idx_main.appendChild(index.createElement('ul'))
+    def idx_add(label, filename):
+        a = index.createElement('a')
+        a.setAttribute('href', filename)
+        a.appendChild(index.createTextNode(label))
+        li = index.createElement('li')
+        li.appendChild(a)
+        idx_list.appendChild(li)
+
     # Copy each play's section into its own file.
     for section in newdom.getElementsByTagName('section'):
         h1 = section.firstChild
-        title = h1.firstChild.data.strip().title().replace(' ', '-')
+        title = h1.firstChild.data.strip().title()
+        filename = 'gs-{}.html'.format(title.replace(' ', '-'))
+        idx_add(title, filename)
+
         single = blank_template()
         article = single.getElementsByTagName('article')[0]
         article.appendChild(single.importNode(section, True))
 
-        with open('gs-{title}.html'.format(title=title), 'w') as f:
+        with open(filename, 'w') as f:
             single.writexml(f)
+
+    with open('index.html', 'w') as f:
+        index.writexml(f)
 
 if __name__ == '__main__':
     main()
