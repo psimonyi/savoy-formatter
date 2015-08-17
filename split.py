@@ -169,6 +169,8 @@ def write_dom(newdom):
         with open(filename, 'w') as f:
             single.writexml(f)
 
+    idx_add("All libretti", 'gs14.html')
+
     with open('index.html', 'w') as f:
         index.writexml(f)
 
