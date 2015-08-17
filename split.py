@@ -7,12 +7,7 @@ import html5lib
 def main():
     dom = source_dom()
     newdom = blank_template()
-    article = newdom.getElementsByTagName('article')[0]
-    # H2s are used for both opera names and act numbers.  There's also an H2 in
-    # the page heading, but we can ignore that.
-    h2s = dom.getElementsByTagName('h2')
-    for h2 in h2s:
-        article.appendChild(format_part(h2, newdom))
+    format(dom, newdom)
     write_dom(newdom)
 
 def source_dom():
@@ -21,6 +16,20 @@ def source_dom():
         dom = html5lib.parse(f, treebuilder='dom')
     dom.normalize()
     return dom
+
+def format(old, new):
+    # H2s are used for both opera names and act numbers.  There's also an H2 in
+    # the page heading, but we can ignore that.
+    h2s = old.getElementsByTagName('h2')
+    article = new.getElementsByTagName('article')[0]
+    section = None
+    for h2 in h2s:
+        part = format_part(h2, new)
+        if part.firstChild.tagName == 'h1':
+            if section: article.appendChild(section)
+            section = new.createElement('section')
+        transplantChildren(part, section)
+    article.appendChild(section)
 
 def format_part(h2, doc):
     # The <h2> is followed by one or more <pre>, and we stop at the <p>.
@@ -45,6 +54,10 @@ def nextElementSibling(node):
     while node and node.nodeType != Node.ELEMENT_NODE:
         node = node.nextSibling
     return node
+
+def transplantChildren(source, dest):
+    while source.hasChildNodes():
+        dest.appendChild(source.firstChild)
 
 def format_pre(pre, doc):
     div = doc.createElement('div')
@@ -130,6 +143,17 @@ def blank_template():
 def write_dom(newdom):
     with open('gs14.html', 'w') as f:
         newdom.writexml(f)
+
+    # Copy each play's section into its own file.
+    for section in newdom.getElementsByTagName('section'):
+        h1 = section.firstChild
+        title = h1.firstChild.data.strip().title().replace(' ', '-')
+        single = blank_template()
+        article = single.getElementsByTagName('article')[0]
+        article.appendChild(single.importNode(section, True))
+
+        with open('gs-{title}.html'.format(title=title), 'w') as f:
+            single.writexml(f)
 
 if __name__ == '__main__':
     main()
