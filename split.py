@@ -158,13 +158,16 @@ def write_dom(newdom):
     # Copy each play's section into its own file.
     for section in newdom.getElementsByTagName('section'):
         h1 = section.firstChild
-        title = h1.firstChild.data.strip().title()
-        filename = 'gs-{}.html'.format(title.replace(' ', '-'))
-        idx_add(title, filename)
+        name = h1.firstChild.data.strip().title()
+        filename = 'gs-{}.html'.format(name.replace(' ', '-'))
+        idx_add(name, filename)
 
         single = blank_template()
         article = single.getElementsByTagName('article')[0]
         article.appendChild(single.importNode(section, True))
+        title = single.getElementsByTagName('title')[0]
+        title.removeChild(title.firstChild)
+        title.appendChild(single.createTextNode(name))
 
         with open(filename, 'w') as f:
             single.writexml(f)
