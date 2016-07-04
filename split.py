@@ -89,9 +89,10 @@ def format_pre(pre, doc):
     return div
 
 SONG_TYPES = [
-    'ARIA',
+    'ARIA', 'Aria',
     'BALLAD',
     'BARCAROLLE',
+    'BRINDISI', # TODO also as suffix: TEA-CUP BRINDISI
     'CHANT',
     'CHORUS',
     'DUET',
@@ -99,6 +100,7 @@ SONG_TYPES = [
     'EXEUNT FOR',
     'FINALE',
     'GLEE',
+    'INCANTATION',
     'INVOCATION',
     'LEGEND',
     'MADRIGAL',
